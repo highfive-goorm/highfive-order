@@ -10,7 +10,8 @@ class OrderItem(BaseModel):
 
 
 class OrderBase(BaseModel):
-    user_id: int
+    id: int
+    user_id: str
     status: Literal["payed", "shipping", "shipped", "completed"]
     order_items: List[OrderItem]
     total_price: int

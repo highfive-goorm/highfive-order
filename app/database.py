@@ -1,10 +1,7 @@
-from pymongo import MongoClient
+from motor.motor_asyncio import AsyncIOMotorClient
 
-MONGO_URL = "mongodb://localhost:27017"
-client = MongoClient(MONGO_URL)
-
-db = client["order"]  # 데이터베이스 이름
-order_collection = db["order"]  # 컬렉션 (테이블에 해당)
-
+client = AsyncIOMotorClient("mongodb://root:mongodb_order@mongodb_order:27017")
+db = client["order"]
+order_collection = db["order"]
 
 
