@@ -1,7 +1,8 @@
+# order/app/crud.py
 from datetime import datetime
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorCollection
-import schemas
+from . import schemas
 
 async def create_order(
     collection: AsyncIOMotorCollection,
