@@ -4,10 +4,11 @@ from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorCollection
 from . import schemas
 
+
 async def create_order(
-    collection: AsyncIOMotorCollection,
-    order: schemas.OrderCreate,
-    is_from_cart: bool = False
+        collection: AsyncIOMotorCollection,
+        order: schemas.OrderCreate,
+        is_from_cart: bool = False
 ):
     now = datetime.utcnow()
     doc = order.dict(exclude_unset=True)
@@ -20,9 +21,10 @@ async def create_order(
     doc["id"] = str(result.inserted_id)
     return doc
 
+
 async def get_orders(
-    collection: AsyncIOMotorCollection,
-    user_id: str = None
+        collection: AsyncIOMotorCollection,
+        user_id: str = None
 ):
     query = {}
     if user_id:
@@ -34,9 +36,10 @@ async def get_orders(
         orders.append(doc)
     return orders
 
+
 async def get_order(
-    collection: AsyncIOMotorCollection,
-    id: str
+        collection: AsyncIOMotorCollection,
+        id: str
 ):
     try:
         oid = ObjectId(id)
@@ -47,10 +50,11 @@ async def get_order(
         doc["id"] = str(doc["_id"])
     return doc
 
+
 async def update_order(
-    collection: AsyncIOMotorCollection,
-    id: str,
-    update_data: dict
+        collection: AsyncIOMotorCollection,
+        id: str,
+        update_data: dict
 ):
     try:
         oid = ObjectId(id)
@@ -66,9 +70,10 @@ async def update_order(
         doc["id"] = str(doc["_id"])
     return doc
 
+
 async def delete_order(
-    collection: AsyncIOMotorCollection,
-    id: str
+        collection: AsyncIOMotorCollection,
+        id: str
 ):
     try:
         oid = ObjectId(id)
