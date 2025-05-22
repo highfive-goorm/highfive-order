@@ -3,26 +3,28 @@ from typing import List, Literal, Optional
 from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 
+
 class OrderItem(BaseModel):
-    product_id: int
-    quantity: int
-    price: int
+    product_id: Optional[int]
+    quantity: Optional[int]
+    price: Optional[int]
+
 
 class OrderBase(BaseModel):
     id: Optional[str] = None
-    user_id: str
+    user_id: Optional[str]
     status: Literal["paid", "shipping", "shipped", "cancelled"]
     order_items: List[OrderItem]
-    total_price: int
+    total_price: Optional[int]
+
 
 class OrderCreate(OrderBase):
     pass
+
 
 class OrderInDB(OrderBase):
     created_at: datetime
     updated_at: datetime
 
-    model_config = ConfigDict(
-        validate_by_name=True,
-        from_attributes=True
-    )
+    class Config:
+        orm_mode = True
