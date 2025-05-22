@@ -5,16 +5,17 @@ import requests
 from bson import ObjectId
 from fastapi import Depends
 from motor.motor_asyncio import AsyncIOMotorCollection
-from .database import order_collection
+from .database import collection
 
-from .schemas import OrderCreate
+from .schemas import OrderInDB
+
 
 def get_db()-> AsyncIOMotorCollection:
-    return order_collection
+    return collection
 class Crud:
     async def create_order(
-            order: OrderCreate,
-            collection: AsyncIOMotorCollection=Depends(get_db())
+            order: OrderInDB,
+            order_collection: AsyncIOMotorCollection=Depends(get_db())
 
     ):
         now = datetime.utcnow()
@@ -23,16 +24,16 @@ class Crud:
             "created_at": now,
             "updated_at": now,
         })
-        result = await collection.insert_one(doc)
+        result = await order_collection.insert_one(doc)
         doc["id"] = str(result.inserted_id)
         requests.delete(url=f'http://cart:8002/cart/{order.user_id}')
         return doc
 
     async def get_orders(
             user_id: str = None,
-            collection: AsyncIOMotorCollection = Depends(get_db)
+            order_collection: AsyncIOMotorCollection = Depends(get_db)
     ):
-        cursor = collection.find({"user_id": user_id})
+        cursor = order_collection.find({"user_id": user_id})
         orders = await cursor.to_list(length=None)
         if collection is None:
             raise Exception({"message":"No Orders"})
@@ -42,13 +43,13 @@ class Crud:
 
     async def get_order(
             id: str,
-            collection: AsyncIOMotorCollection = Depends(get_db)
+            order_collection: AsyncIOMotorCollection = Depends(get_db)
     ):
         try:
             oid = ObjectId(id)
         except Exception:
             return None
-        doc = await collection.find_one({"_id": oid})
+        doc = await order_collection.find_one({"_id": oid})
         if doc:
             doc["id"] = str(doc["_id"])
         return doc
@@ -56,7 +57,7 @@ class Crud:
     async def update_order(
             id: str,
             update_data: dict,
-            collection: AsyncIOMotorCollection=Depends(get_db)
+            order_collection: AsyncIOMotorCollection=Depends(get_db)
 
     ):
         try:
@@ -64,22 +65,23 @@ class Crud:
         except Exception:
             return None
         update_data["updated_at"] = datetime.utcnow()
-        await collection.update_one(
+        await order_collection.update_one(
             {"_id": oid},
             {"$set": update_data}
         )
-        doc = await collection.find_one({"_id": oid})
+        doc = await order_collection.find_one({"_id": oid})
         if doc:
             doc["id"] = str(doc["_id"])
         return doc
 
     async def delete_order(
-            collection: AsyncIOMotorCollection,
-            id: str
+            id: str,
+            order_collection: AsyncIOMotorCollection=Depends(get_db())
+
     ):
         try:
             oid = ObjectId(id)
         except Exception:
             return {"deleted": 0}
-        result = await collection.delete_one({"_id": oid})
+        result = await order_collection.delete_one({"_id": oid})
         return {"deleted": result.deleted_count}

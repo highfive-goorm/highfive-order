@@ -5,17 +5,17 @@ from datetime import datetime
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
 from bson import ObjectId
 
-from .database import order_collection
-from .schemas import OrderInDB, OrderBase, OrderCreate
+from .database import collection
+from .schemas import OrderInDB
 from .crud import Crud as crud
 
 app = FastAPI()
 
 def get_db()-> AsyncIOMotorCollection:
-    return order_collection
+    return collection
 @app.post("/order", response_model=OrderInDB, status_code=201)
 async def create_order(
-        order: OrderCreate,
+        order: OrderInDB,
         order_collection: AsyncIOMotorCollection = Depends(get_db)
 ):
     if order_collection is None:
@@ -36,7 +36,7 @@ async def list_orders(
 @app.put("/order/{id}", response_model=OrderInDB)
 async def update_order(
         id: str,
-        order: OrderCreate,
+        order: OrderInDB,
         order_collection: AsyncIOMotorCollection = Depends(get_db)
 ):
     updated = await crud.update_order(id, order.dict(exclude_unset=True), order_collection)
