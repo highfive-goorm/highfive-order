@@ -11,7 +11,7 @@ from . import crud
 app = FastAPI()
 
 def get_db() -> AsyncIOMotorCollection:
-    client = AsyncIOMotorClient("mongodb://root:mongodb_order@mongodb_order:27017")
+    client = AsyncIOMotorClient("mongodb://postgres:han00719()@mongodb_order:27017")
     return client.order.order
 
 @app.post("/order", response_model=OrderInDB, status_code=201)
