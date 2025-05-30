@@ -1,6 +1,6 @@
 # order/app/main.py
 from typing import List, Optional
-
+import os
 import httpx
 from fastapi import FastAPI, HTTPException, Depends, Path, Query
 from datetime import datetime
@@ -14,6 +14,8 @@ from .crud import Crud as crud
 
 app = FastAPI()
 
+PRODUCT_BASE_URL = os.environ["PRODUCT_BASE_URL"]
+bulk_url = f"{PRODUCT_BASE_URL}/bulk"
 
 def get_db() -> AsyncIOMotorCollection:
     return collection
@@ -59,7 +61,7 @@ async def get_orders(
     try:
         async with httpx.AsyncClient() as client:
             resp = await client.post(
-                "http://product:8001/product/bulk",
+                bulk_url,
                 json={"product_ids": list(product_ids)},
                 timeout=10.0
             )
