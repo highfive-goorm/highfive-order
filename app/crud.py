@@ -1,7 +1,7 @@
 # order/app/crud.py
 from datetime import datetime
 
-
+import os
 import httpx
 import requests
 from bson import ObjectId
@@ -13,6 +13,7 @@ from .database import collection
 
 from .schemas import OrderInDB
 
+CART_BASE_URL = os.environ["CART_BASE_URL"]
 
 def get_db() -> AsyncIOMotorCollection:
     return collection
@@ -36,7 +37,7 @@ class Crud:
             try:
                 async with httpx.AsyncClient() as client:
                     resp = await client.delete(
-                        f"http://cart:8002/cart/{order.user_id}",
+                        f"{CART_BASE_URL}/{order.user_id}",
                         timeout=5.0
                     )
                     resp.raise_for_status()
