@@ -20,6 +20,9 @@ bulk_url = f"{PRODUCT_BASE_URL}/bulk"
 def get_db() -> AsyncIOMotorCollection:
     return collection
 
+@app.get("/health", status_code=200)
+async def health_check():
+    return {"status": "ok"}
 
 @app.post("/order", response_model=OrderInDB, status_code=201)
 async def create_order(
