@@ -29,6 +29,8 @@ class Crud:
         doc_to_insert = order_data.model_dump(exclude_unset=True)
         doc_to_insert["created_at"] = now
         doc_to_insert["updated_at"] = now
+        # OrderCreate는 OrderBase를 상속하므로 payment_status 기본값이 설정됨.
+        # 필요시 order_data에 payment_status를 명시적으로 설정하여 전달 가능.
         
         result = await db_collection.insert_one(doc_to_insert)
         # MongoDB가 생성한 _id를 포함하여 반환할 문서 조회
