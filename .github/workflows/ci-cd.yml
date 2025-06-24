@@ -162,13 +162,13 @@ jobs:
           path: 'config-repo'
       - name: Update manifest file
         run: |
-          sed -i -E "s|^(\s*image:\s*).*|\1326536620954.dkr.ecr.ap-northeast-2.amazonaws.com/highfive/highfive-order:${{ needs.build.outputs.version_tag }}|" config-repo/highfive-order-service.yaml
+          sed -i -E "s|^(\s*image:\s*).*|\1326536620954.dkr.ecr.ap-northeast-2.amazonaws.com/highfive/highfive-order:${{ needs.build.outputs.version_tag }}|" config-repo/order/highfive-order-service.yaml
       - name: Commit and push changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Deploy image ${{ needs.build.outputs.version_tag }} for highfive-order-service"
           repository: 'config-repo'
-          file_pattern: 'highfive-order-service.yaml'
+          file_pattern: 'order/highfive-order-service.yaml'
 
   # ==========================================================
   # JOB 6: 워크플로우 실패 시 알림

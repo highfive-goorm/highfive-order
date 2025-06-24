@@ -148,7 +148,7 @@ async def delete_order(
     return
 
 
-@app.post("/payment/kakao/ready", response_model=KakaoPaymentReadyResponse, status_code=status.HTTP_200_OK)
+@app.post("/order/payment/kakao/ready", response_model=KakaoPaymentReadyResponse, status_code=status.HTTP_200_OK)
 async def kakao_payment_ready(
     payload: KakaoPaymentReadyRequest,
     db: AsyncIOMotorCollection = Depends(get_db)
@@ -230,7 +230,7 @@ async def kakao_payment_ready(
         order_id=order_id_str
     )
 
-@app.post("/payment/kakao/approve", response_model=KakaoPaymentApproveResponse, status_code=status.HTTP_200_OK)
+@app.post("/order/payment/kakao/approve", response_model=KakaoPaymentApproveResponse, status_code=status.HTTP_200_OK)
 async def kakao_payment_approve(
     payload: KakaoPaymentApproveRequest,
     db: AsyncIOMotorCollection = Depends(get_db)
